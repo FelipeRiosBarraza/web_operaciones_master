@@ -1,5 +1,3 @@
-26-12-2025:
-Primera versión (0.1) de web interactiva para estandar de operaciones:
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,6 +32,12 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
             color: var(--accent-blue);
             font-weight: 600;
         }
+        /* Estilo para la transición del slide */
+        #note-slide-container {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .fade-out { opacity: 0; }
+        .fade-in { opacity: 1; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -68,8 +72,9 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
             <section id="home" class="space-y-6">
                 <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
                     <h2 class="text-2xl font-bold text-slate-800 mb-2">Validación Técnica Operacional</h2>
-                    <p class="text-slate-600 mb-4">Este portal centraliza las normativas de instalación para los equipos de terreno. Los datos han sido validados según estándares de <strong>Hikvision</strong>, <strong>Witek</strong> y los requerimientos de la gerencia.</p>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p class="text-slate-600 mb-4">Este portal consolida las normativas y lineamientos técnicos aplicables a la instalación de sistemas de seguridad en terreno. La información que contiene ha sido validada conforme a estándares industriales y a las directrices establecidas por la Gerencia de Operaciones.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div onclick="navTo('infra')" class="cursor-pointer group bg-gradient-to-br from-blue-50 to-white p-5 rounded-lg border border-blue-100 hover:border-blue-300 transition-all">
                             <div class="flex items-center justify-between mb-2">
                                 <h3 class="font-bold text-blue-900">Validar Medio de Red</h3>
@@ -77,7 +82,8 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
                             </div>
                             <p class="text-sm text-blue-800">Factibilidad técnica basada en distancias reales y tipo de antena.</p>
                         </div>
-                                                <div onclick="navTo('config')" class="cursor-pointer group bg-gradient-to-br from-orange-50 to-white p-5 rounded-lg border border-orange-100 hover:border-orange-300 transition-all">
+                        
+                        <div onclick="navTo('config')" class="cursor-pointer group bg-gradient-to-br from-orange-50 to-white p-5 rounded-lg border border-orange-100 hover:border-orange-300 transition-all">
                             <div class="flex items-center justify-between mb-2">
                                 <h3 class="font-bold text-orange-900">Protocolo de Claves</h3>
                                 <span class="text-2xl">🔐</span>
@@ -108,8 +114,9 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
             <section id="config" class="hidden space-y-6">
                 <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-orange-500">
                     <h2 class="text-2xl font-bold text-slate-800 mb-4">Protocolo de Activación</h2>
-                    <p class="text-slate-600 mb-4 text-sm italic">"Todo equipo debe salir programado con su clave para evitar improvisación en domicilio."</p>
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 text-sm">
+                    <p class="text-slate-600 mb-4 text-sm italic">"Todo equipo debe salir programado con su clave para evitar improvisación en domicilio, las credenciales deben quedar almacenadas en Odoo asociadas a la serie del equipo."</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 text-sm">
                         <div class="bg-slate-50 p-4 rounded-lg">
                             <h4 class="font-bold mb-2">Activación Previa</h4>
                             <p>Uso obligatorio de SADP Tool en bodega. No se activan equipos en la escalera.</p>
@@ -120,7 +127,7 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
                         </div>
                         <div class="bg-red-50 p-4 rounded-lg border border-red-100">
                             <h4 class="font-bold text-red-900 mb-2">Registro</h4>
-                            <p class="text-red-800">Si el cliente pide cambio, debe quedar registrado en la bitácora técnica de inmediato.</p>
+                            <p class="text-red-800">Si el cliente pide cambio, debe quedar registrado en las credenciales asociadas a la tarea que el técnico esta ejecutando de inmediato.</p>
                         </div>
                     </div>
                 </div>
@@ -153,18 +160,14 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-                    <h3 class="text-xl font-bold text-slate-800 mb-4">Nota Técnica: Antenas de Rejilla (Grid)</h3>
-                    <p class="text-sm text-slate-600 mb-4">Tal como se indica en los procedimientos operativos: para distancias sobre 250 metros o entornos complejos, es mandatorio el uso de antenas de rejilla para asegurar que el enlace "nunca se pierda".</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                            <h4 class="font-bold text-orange-900 text-xs uppercase">Radioenlace Panel</h4>
-                            <p class="text-xs mt-1 text-orange-800">Uso: Distancias cortas (&lt;250m). Sensible a interferencias de árboles o clima.</p>
-                        </div>
-                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                            <h4 class="font-bold text-blue-900 text-xs uppercase">Radioenlace Rejilla (Grid)</h4>
-                            <p class="text-xs mt-1 text-blue-800">Uso: Distancias largas o críticas. Alta directividad y resistencia al viento.</p>
-                        </div>
+                <!-- SLIDE INFORMATIVO DE NOTAS TÉCNICAS -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 min-h-[280px] flex flex-col justify-center relative overflow-hidden">
+                    <div id="note-slide-container" class="fade-in">
+                        <!-- El contenido se inyecta vía JS -->
+                    </div>
+                    <!-- Indicador visual de tiempo -->
+                    <div class="absolute bottom-0 left-0 h-1 bg-blue-100 w-full">
+                        <div id="slide-progress" class="h-full bg-blue-500 w-0 transition-all duration-[7000ms] linear"></div>
                     </div>
                 </div>
             </section>
@@ -175,7 +178,7 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
                     <h2 class="text-2xl font-bold text-slate-800 mb-4">Legalidad y Entrega</h2>
                     <div class="space-y-4">
                         <div class="p-3 bg-blue-50 border-l-4 border-blue-600">
-                            <h4 class="font-bold text-sm">Ley 19.628</h4>
+                            <h3 class="font-bold text-sm">Ley 19.628</h3>
                             <p class="text-xs">Prohibido enfocar dormitorios, ventanas o áreas de recreación privada de vecinos. La cámara debe captar solo lo necesario para la seguridad del cliente.</p>
                         </div>
                     </div>
@@ -196,7 +199,7 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
     </main>
 
     <footer class="bg-slate-900 text-slate-500 py-4 text-center text-[10px]">
-        <p>© 2025 Master Home - Operaciones Terreno | Estándares Certificados</p>
+        <p id="footer-text">© <span id="current-year"></span> Master Home - Operaciones Terreno | Creado con amor por TI ❤️</p>
     </footer>
 
     <script>
@@ -211,7 +214,8 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
             const dist = parseInt(document.getElementById('distanceNumInput').value) || 0;
             const canWire = document.getElementById('wiringInput').value === 'yes';
             const card = document.getElementById('resultCard');
-                        if (canWire) {
+            
+            if (canWire) {
                 if (dist <= 100) {
                     card.innerHTML = `<span class="text-4xl mb-2">🔌</span><h3 class="text-xl font-bold">UTP Cat6</h3><p class="text-sm opacity-80">Ideal. Use cable 100% cobre.</p>`;
                     card.className = "bg-blue-600 rounded-lg p-6 flex flex-col items-center text-center text-white";
@@ -230,6 +234,77 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
             }
         }
 
+        // LÓGICA DEL SLIDE DE NOTAS TÉCNICAS
+        const technicalNotes = [
+            {
+                title: "Nota Técnica: Antenas de Rejilla (Grid)",
+                content: "Para distancias sobre 250 metros o entornos complejos, es mandatorio el uso de antenas de rejilla para asegurar que el enlace 'nunca se pierda'.",
+                details: [
+                    { label: "Radioenlace Panel", text: "Uso: < 250m. Sensible a clima.", color: "orange" },
+                    { label: "Radioenlace Rejilla", text: "Uso: Críticos / Largas distancias.", color: "blue" }
+                ]
+            },
+            {
+                title: "Nota Técnica: Estándar de Cobre (UTP)",
+                content: "El límite físico del cobre son 100 metros. Para instalaciones exteriores se exige cable Cat6 100% Cobre con chaqueta UV.",
+                details: [
+                    { label: "Distancia Máxima", text: "100 metros (datos + energía).", color: "blue" },
+                    { label: "Material", text: "Cobre puro (No CCA/Aluminio).", color: "orange" }
+                ]
+            },
+            {
+                title: "Nota Técnica: Fibra Óptica",
+                content: "Cuando la distancia supera los 100m en vía cableada, la fibra es la única opción para garantizar ancho de banda sin latencia.",
+                details: [
+                    { label: "Inmunidad", text: "Total frente a ruidos eléctricos.", color: "green" },
+                    { label: "Durabilidad", text: "Alta resistencia en postación.", color: "blue" }
+                ]
+            }
+        ];
+
+        let currentNoteIndex = 0;
+
+        function updateNoteSlide() {
+            const container = document.getElementById('note-slide-container');
+            const progress = document.getElementById('slide-progress');
+            const note = technicalNotes[currentNoteIndex];
+
+            // Iniciar desvanecimiento
+            container.classList.add('fade-out');
+
+            setTimeout(() => {
+                // Cambiar contenido
+                let detailsHTML = note.details.map(d => `
+                    <div class="p-4 bg-${d.color}-50 border border-${d.color}-200 rounded-lg">
+                        <h4 class="font-bold text-${d.color}-900 text-xs uppercase">${d.label}</h4>
+                        <p class="text-xs mt-1 text-${d.color}-800">${d.text}</p>
+                    </div>
+                `).join('');
+
+                container.innerHTML = `
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">${note.title}</h3>
+                    <p class="text-sm text-slate-600 mb-4">${note.content}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${detailsHTML}
+                    </div>
+                `;
+
+                // Mostrar de nuevo
+                container.classList.remove('fade-out');
+                container.classList.add('fade-in');
+
+                // Reiniciar barra de progreso
+                progress.style.transition = 'none';
+                progress.style.width = '0%';
+                setTimeout(() => {
+                    progress.style.transition = 'width 7000ms linear';
+                    progress.style.width = '100%';
+                }, 50);
+
+                currentNoteIndex = (currentNoteIndex + 1) % technicalNotes.length;
+            }, 500);
+        }
+
         const tasks = ["Clave registrada", "Norma T568B aplicada", "Señalética 19.628 instalada", "Equipos pre-configurados", "Prueba IR nocturna"];
         function initCheck() {
             const cont = document.getElementById('checklistContainer');
@@ -244,7 +319,13 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
         }
 
         window.onload = () => {
+            // Actualizador automático de año
+            document.getElementById('current-year').innerText = new Date().getFullYear();
+
             initCheck();
+            updateNoteSlide(); // Primera carga del slide
+            setInterval(updateNoteSlide, 7000); // Rotación cada 7 segundos
+
             new Chart(document.getElementById('distanceChart'), {
                 type: 'bar',
                 data: {
@@ -256,7 +337,7 @@ Primera versión (0.1) de web interactiva para estandar de operaciones:
                     }]
                 },
                 options: { 
-                    indexAxis: 'y', // Mantiene las barras horizontales
+                    indexAxis: 'y',
                     maintainAspectRatio: false, 
                     plugins: { legend: { display: false } },
                     scales: { 

@@ -1,0 +1,278 @@
+26-12-2025:
+Primera versión (0.1) de web interactiva para estandar de operaciones:
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Operaciones Terreno - Master Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --tech-blue: #0f172a;
+            --tech-light: #f1f5f9;
+            --accent-blue: #3b82f6;
+            --alert-orange: #f97316;
+            --success-green: #22c55e;
+        }
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #1e293b;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+        }
+        .nav-item.active {
+            border-bottom: 3px solid var(--accent-blue);
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight">Operaciones Terreno</h1>
+                <p class="text-xs text-slate-400">Master Home - Manual de Estándares V0.1</p>
+            </div>
+            <div id="status-indicator" class="hidden md:block bg-green-600 text-xs px-2 py-1 rounded-full animate-pulse">
+                Datos Verificados
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-[72px] z-40">
+        <div class="max-w-5xl mx-auto flex overflow-x-auto whitespace-nowrap px-2">
+            <button onclick="navTo('home')" id="nav-home" class="nav-item active px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors">Inicio</button>
+            <button onclick="navTo('config')" id="nav-config" class="nav-item px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors">Configuración</button>
+            <button onclick="navTo('infra')" id="nav-infra" class="nav-item px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors">Infraestructura</button>
+            <button onclick="navTo('legal')" id="nav-legal" class="nav-item px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors">Legal & Checklist</button>
+        </div>
+    </nav>
+
+    <main class="flex-grow bg-slate-50 p-4">
+        <div class="max-w-5xl mx-auto">
+
+            <!-- HOME SECTION -->
+            <section id="home" class="space-y-6">
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Validación Técnica Operacional</h2>
+                    <p class="text-slate-600 mb-4">Este portal centraliza las normativas de instalación para los equipos de terreno. Los datos han sido validados según estándares de <strong>Hikvision</strong>, <strong>Witek</strong> y los requerimientos de la gerencia.</p>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div onclick="navTo('infra')" class="cursor-pointer group bg-gradient-to-br from-blue-50 to-white p-5 rounded-lg border border-blue-100 hover:border-blue-300 transition-all">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-blue-900">Validar Medio de Red</h3>
+                                <span class="text-2xl">🛠️</span>
+                            </div>
+                            <p class="text-sm text-blue-800">Factibilidad técnica basada en distancias reales y tipo de antena.</p>
+                        </div>
+                                                <div onclick="navTo('config')" class="cursor-pointer group bg-gradient-to-br from-orange-50 to-white p-5 rounded-lg border border-orange-100 hover:border-orange-300 transition-all">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-orange-900">Protocolo de Claves</h3>
+                                <span class="text-2xl">🔐</span>
+                            </div>
+                            <p class="text-sm text-orange-800">Estándar de pre-configuración obligatoria en bodega.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-sm font-semibold text-slate-500 uppercase mb-4">Alcance Técnico por Medio (Metros)</h3>
+                        <div class="chart-container">
+                            <canvas id="distanceChart"></canvas>
+                        </div>
+                        <p class="text-[10px] text-center text-slate-400 mt-2">Nota: Se usa escala logarítmica para apreciar desde los 100m hasta los 25km.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                         <h3 class="text-sm font-semibold text-slate-500 uppercase mb-4">Fiabilidad de Enlace</h3>
+                         <div class="chart-container">
+                            <canvas id="reliabilityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONFIGURATION SECTION -->
+            <section id="config" class="hidden space-y-6">
+                <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-orange-500">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">Protocolo de Activación</h2>
+                    <p class="text-slate-600 mb-4 text-sm italic">"Todo equipo debe salir programado con su clave para evitar improvisación en domicilio."</p>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 text-sm">
+                        <div class="bg-slate-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Activación Previa</h4>
+                            <p>Uso obligatorio de SADP Tool en bodega. No se activan equipos en la escalera.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Seguridad</h4>
+                            <p>Claves únicas por proyecto. Prohibido el uso de claves genéricas por defecto.</p>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+                            <h4 class="font-bold text-red-900 mb-2">Registro</h4>
+                            <p class="text-red-800">Si el cliente pide cambio, debe quedar registrado en la bitácora técnica de inmediato.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INFRASTRUCTURE SECTION -->
+            <section id="infra" class="hidden space-y-8">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 shadow-lg text-white">
+                    <h2 class="text-2xl font-bold mb-2">Asistente de Factibilidad</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Distancia estimada (Metros)</label>
+                                <input type="number" id="distanceNumInput" value="50" class="w-full bg-slate-700 text-white p-2 rounded border border-slate-600 focus:outline-none focus:border-blue-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Obstáculos o Cruces</label>
+                                <select id="wiringInput" class="w-full bg-slate-700 text-white rounded p-2 border border-slate-600">
+                                    <option value="yes">Vía cableada (Postación/Ducto)</option>
+                                    <option value="no">Vía inalámbrica (Sin ducto)</option>
+                                </select>
+                            </div>
+                            <button onclick="calculateStandard()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded transition-colors shadow-lg">Analizar Requerimiento</button>
+                        </div>
+                        <div id="resultCard" class="bg-slate-700/50 rounded-lg p-6 border border-slate-600 flex flex-col justify-center items-center text-center text-white">
+                            <span class="text-4xl mb-3">📡</span>
+                            <h3 class="text-xl font-bold">Análisis de Red</h3>
+                            <p class="text-sm text-slate-400 mt-2">Los resultados consideran el salto técnico a partir de los 250m.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Nota Técnica: Antenas de Rejilla (Grid)</h3>
+                    <p class="text-sm text-slate-600 mb-4">Tal como se indica en los procedimientos operativos: para distancias sobre 250 metros o entornos complejos, es mandatorio el uso de antenas de rejilla para asegurar que el enlace "nunca se pierda".</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                            <h4 class="font-bold text-orange-900 text-xs uppercase">Radioenlace Panel</h4>
+                            <p class="text-xs mt-1 text-orange-800">Uso: Distancias cortas (&lt;250m). Sensible a interferencias de árboles o clima.</p>
+                        </div>
+                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h4 class="font-bold text-blue-900 text-xs uppercase">Radioenlace Rejilla (Grid)</h4>
+                            <p class="text-xs mt-1 text-blue-800">Uso: Distancias largas o críticas. Alta directividad y resistencia al viento.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LEGAL SECTION -->
+            <section id="legal" class="hidden space-y-6">
+                <div class="bg-white rounded-xl p-6 shadow-sm border-t-4 border-blue-600">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">Legalidad y Entrega</h2>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-blue-50 border-l-4 border-blue-600">
+                            <h4 class="font-bold text-sm">Ley 19.628</h4>
+                            <p class="text-xs">Prohibido enfocar dormitorios, ventanas o áreas de recreación privada de vecinos. La cámara debe captar solo lo necesario para la seguridad del cliente.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Checklist de Calidad</h3>
+                    <div id="checklistContainer" class="space-y-2"></div>
+                    <div class="mt-6 p-4 bg-slate-100 rounded-lg text-center">
+                        <div class="w-full bg-slate-300 h-3 rounded-full mt-2">
+                            <div id="progressBar" class="bg-blue-600 h-3 rounded-full transition-all w-0"></div>
+                        </div>
+                        <span id="progressPct" class="text-xl font-bold text-blue-700 mt-2 block">0%</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-500 py-4 text-center text-[10px]">
+        <p>© 2025 Master Home - Operaciones Terreno | Estándares Certificados</p>
+    </footer>
+
+    <script>
+        function navTo(tabId) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+            ['home', 'config', 'infra', 'legal'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        function calculateStandard() {
+            const dist = parseInt(document.getElementById('distanceNumInput').value) || 0;
+            const canWire = document.getElementById('wiringInput').value === 'yes';
+            const card = document.getElementById('resultCard');
+                        if (canWire) {
+                if (dist <= 100) {
+                    card.innerHTML = `<span class="text-4xl mb-2">🔌</span><h3 class="text-xl font-bold">UTP Cat6</h3><p class="text-sm opacity-80">Ideal. Use cable 100% cobre.</p>`;
+                    card.className = "bg-blue-600 rounded-lg p-6 flex flex-col items-center text-center text-white";
+                } else {
+                    card.innerHTML = `<span class="text-4xl mb-2">✨</span><h3 class="text-xl font-bold">Fibra Óptica</h3><p class="text-sm opacity-80">Mandatorio: Supera límite de cobre.</p>`;
+                    card.className = "bg-green-600 rounded-lg p-6 flex flex-col items-center text-center text-white";
+                }
+            } else {
+                if (dist > 250) {
+                    card.innerHTML = `<span class="text-4xl mb-2">📡</span><h3 class="text-xl font-bold">Radioenlace Rejilla</h3><p class="text-sm opacity-80">Requerido para estabilidad en distancias largas.</p>`;
+                    card.className = "bg-orange-700 rounded-lg p-6 flex flex-col items-center text-center text-white";
+                } else {
+                    card.innerHTML = `<span class="text-4xl mb-2">📶</span><h3 class="text-xl font-bold">Radioenlace Panel</h3><p class="text-sm opacity-80">Factible para tramos cortos con LoS.</p>`;
+                    card.className = "bg-orange-500 rounded-lg p-6 flex flex-col items-center text-center text-white";
+                }
+            }
+        }
+
+        const tasks = ["Clave registrada", "Norma T568B aplicada", "Señalética 19.628 instalada", "Equipos pre-configurados", "Prueba IR nocturna"];
+        function initCheck() {
+            const cont = document.getElementById('checklistContainer');
+            tasks.forEach(t => {
+                cont.innerHTML += `<label class="flex items-center p-3 bg-slate-50 border rounded cursor-pointer mb-2"><input type="checkbox" class="t-check" onchange="up()"><span class="ml-3 text-sm">${t}</span></label>`;
+            });
+        }
+        function up() {
+            const p = Math.round((document.querySelectorAll('.t-check:checked').length / tasks.length) * 100);
+            document.getElementById('progressBar').style.width = p + '%';
+            document.getElementById('progressPct').innerText = p + '%';
+        }
+
+        window.onload = () => {
+            initCheck();
+            new Chart(document.getElementById('distanceChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Cobre (UTP)', 'Radio Panel', 'Radio Rejilla', 'Fibra Óptica'],
+                    datasets: [{ 
+                        label: 'Alcance Máximo (m)', 
+                        data: [100, 250, 5000, 25000], 
+                        backgroundColor: ['#94a3b8', '#fbbf24', '#f97316', '#22c55e'] 
+                    }]
+                },
+                options: { 
+                    indexAxis: 'y', // Mantiene las barras horizontales
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        x: { 
+                            type: 'logarithmic',
+                            title: { display: true, text: 'Metros (Escala Log)', font: { size: 10 } }
+                        } 
+                    } 
+                }
+            });
+            new Chart(document.getElementById('reliabilityChart'), {
+                type: 'doughnut',
+                data: { labels: ['Cobre', 'Radio', 'Fibra'], datasets: [{ data: [75, 50, 99], backgroundColor: ['#3b82f6', '#f97316', '#22c55e'] }] },
+                options: { maintainAspectRatio: false }
+            });
+        };
+    </script>
+</body>
+</html>
